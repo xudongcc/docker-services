@@ -41,3 +41,21 @@ services:
       REDIS_CONFIG: |
         dir /data
         requirepass ${REDIS_PASSWORD}
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+    ports:
+      - ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}:9200
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION}
+    ports:
+      - ${KIBANA_HOST}:${KIBANA_PORT}:5601
+    environment:
+      - I18N_LOCALE=${KIBANA_LANGUAGE}
