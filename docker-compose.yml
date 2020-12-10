@@ -1,6 +1,13 @@
 version: "3"
 
 services:
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - ${ADMINER_HOST}:${ADMINER_PORT}:8080
+
   mysql:
     container_name: mysql
     image: mysql:${MYSQL_VERSION}
@@ -18,7 +25,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:alpine
+    image: postgres:${POSTGRES_VERSION}
     restart: always
     ports:
       - ${POSTGRES_HOST}:${POSTGRES_PORT}:5432
