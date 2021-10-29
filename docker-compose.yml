@@ -52,6 +52,7 @@ services:
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+    restart: always
     ports:
       - ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}:9200
     volumes:
@@ -62,7 +63,34 @@ services:
   kibana:
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION}
+    restart: always
     ports:
       - ${KIBANA_HOST}:${KIBANA_PORT}:5601
     environment:
       - I18N_LOCALE=${KIBANA_LANGUAGE}
+
+  browserless:
+    image: browserless/chrome:1.43-chrome-stable
+    restart: always
+    ulimits:
+      core:
+        hard: 0
+        soft: 0
+    ports:
+      - ${BROWSERLESS_HOST}:${BROWSERLESS_PORT}:3000
+    environment:
+      # 复用浏览器实例
+      - KEEP_ALIVE=true
+      - PREBOOT_CHROME=true
+      - FUNCTION_ENABLE_INCOGNITO_MODE=true
+      # 浏览器重启：4 小时重启 Chrome
+      - CHROME_REFRESH_TIME=14400000
+      # 最大并发会话数：10
+      - MAX_CONCURRENT_SESSIONS=10
+      # 最大队列长度：10
+      - MAX_QUEUE_LENGTH=10
+      # 会话超时：会话最长可以运行 1 小时
+      - CONNECTION_TIMEOUT=3600000
+      # 删除工作区中超过 7 天的文件
+      - WORKSPACE_DELETE_EXPIRED=true
+      - WORKSPACE_EXPIRE_DAYS=7
