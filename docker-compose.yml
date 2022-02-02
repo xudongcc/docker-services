@@ -36,7 +36,7 @@ services:
 
   redis:
     container_name: redis
-    image: redis:alpine
+    image: redis:${REDIS_VERSION}
     restart: always
     entrypoint: sh /docker-entrypoint.sh
     ports:
@@ -48,6 +48,17 @@ services:
       REDIS_CONFIG: |
         dir /data
         requirepass ${REDIS_PASSWORD}
+
+  meilisearch:
+    container_name: meilisearch
+    image: getmeili/meilisearch:${MEILI_VERSION}
+    restart: always
+    ports:
+      - ${MEILI_HOST}:${MEILI_PORT}:7700
+    volumes:
+      - ./meilisearch/data:/data.ms
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
 
   elasticsearch:
     container_name: elasticsearch
