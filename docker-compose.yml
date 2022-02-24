@@ -59,14 +59,14 @@ services:
 
   meilisearch:
     container_name: meilisearch
-    image: getmeili/meilisearch:${MEILI_VERSION}
+    image: getmeili/meilisearch:${MEILISEARCH_VERSION}
     restart: always
     ports:
-      - ${MEILI_HOST}:${MEILI_PORT}:7700
+      - ${MEILISEARCH_HOST}:${MEILISEARCH_PORT}:7700
     volumes:
       - ./meilisearch/data:/data.ms
     environment:
-      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
 
   elasticsearch:
     container_name: elasticsearch
