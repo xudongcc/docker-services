@@ -49,6 +49,14 @@ services:
         dir /data
         requirepass ${REDIS_PASSWORD}
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 127.0.0.1:5672:5672
+      - 127.0.0.1:15672:15672
+
   meilisearch:
     container_name: meilisearch
     image: getmeili/meilisearch:${MEILI_VERSION}
