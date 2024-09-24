@@ -1,115 +1,23 @@
-version: "3"
-
 services:
-  adminer:
-    container_name: adminer
-    image: adminer
+  postgresql:
+    container_name: postgresql
+    image: ghcr.io/xudongcc/postgresql:${POSTGRESQL_VERSION}
     restart: always
     ports:
-      - ${ADMINER_HOST}:${ADMINER_PORT}:8080
-
-  mysql:
-    container_name: mysql
-    image: mysql:${MYSQL_VERSION}
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    restart: always
-    ports:
-      - ${MYSQL_HOST}:${MYSQL_PORT}:3306
+      - ${POSTGRESQL_HOST}:${POSTGRESQL_PORT}:5432
     volumes:
-      - ./mysql/data:/var/lib/mysql
+      - ./postgresql/data:/bitnami/postgresql/data
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-
-  postgres:
-    container_name: postgres
-    image: postgres:${POSTGRES_VERSION}
-    restart: always
-    ports:
-      - ${POSTGRES_HOST}:${POSTGRES_PORT}:5432
-    volumes:
-      - ./postgres/data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit,pg_stat_statements,pg_partman_bgw
 
   redis:
     container_name: redis
-    image: redis:${REDIS_VERSION}
+    image: bitnami/redis:${REDIS_VERSION}
     restart: always
-    entrypoint: sh /docker-entrypoint.sh
     ports:
       - ${REDIS_HOST}:${REDIS_PORT}:6379
     volumes:
-      - ./redis/docker-entrypoint.sh:/docker-entrypoint.sh
-      - ./redis/data:/data
+      - ./redis/data:/bitnami/redis/data
     environment:
-      REDIS_CONFIG: |
-        dir /data
-        requirepass ${REDIS_PASSWORD}
-
-  rabbitmq:
-    container_name: rabbitmq
-    build: ./rabbitmq
-    restart: always
-    ports:
-      - 127.0.0.1:5672:5672
-      - 127.0.0.1:15672:15672
-
-  meilisearch:
-    container_name: meilisearch
-    image: getmeili/meilisearch:${MEILISEARCH_VERSION}
-    restart: always
-    ports:
-      - ${MEILISEARCH_HOST}:${MEILISEARCH_PORT}:7700
-    volumes:
-      - ./meilisearch/data:/data.ms
-    environment:
-      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
-
-  elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
-    restart: always
-    ports:
-      - ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}:9200
-    volumes:
-      - ./elasticsearch/data:/usr/share/elasticsearch/data
-    environment:
-      - discovery.type=single-node
-
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION}
-    restart: always
-    ports:
-      - ${KIBANA_HOST}:${KIBANA_PORT}:5601
-    environment:
-      - I18N_LOCALE=${KIBANA_LANGUAGE}
-
-  browserless:
-    image: browserless/chrome:1.43-chrome-stable
-    restart: always
-    ulimits:
-      core:
-        hard: 0
-        soft: 0
-    ports:
-      - ${BROWSERLESS_HOST}:${BROWSERLESS_PORT}:3000
-    environment:
-      # 复用浏览器实例
-      - KEEP_ALIVE=true
-      - PREBOOT_CHROME=true
-      - FUNCTION_ENABLE_INCOGNITO_MODE=true
-      # 浏览器重启：4 小时重启 Chrome
-      - CHROME_REFRESH_TIME=14400000
-      # 最大并发会话数：10
-      - MAX_CONCURRENT_SESSIONS=10
-      # 最大队列长度：10
-      - MAX_QUEUE_LENGTH=10
-      # 会话超时：会话最长可以运行 1 小时
-      - CONNECTION_TIMEOUT=3600000
-      # 删除工作区中超过 7 天的文件
-      - WORKSPACE_DELETE_EXPIRED=true
-      - WORKSPACE_EXPIRE_DAYS=7
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
