@@ -21,3 +21,17 @@ services:
       - ./redis/data:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  minio:
+    container_name: minio
+    image: minio/minio:${MINIO_VERSION}
+    restart: always
+    ports:
+      - ${MINIO_HOST}:${MINIO_API_PORT}:9000
+      - ${MINIO_HOST}:${MINIO_CONSOLE_PORT}:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./minio/data:/data
+    command: server /data --console-address ":9001"
