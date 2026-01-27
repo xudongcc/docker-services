@@ -1,7 +1,10 @@
 services:
   postgresql:
     container_name: postgresql
-    image: ghcr.io/xudongcc/postgresql:${POSTGRESQL_VERSION}
+    build:
+      context: ./postgresql
+      args:
+        PG_VERSION: ${POSTGRESQL_VERSION}
     restart: always
     ports:
       - ${POSTGRESQL_HOST}:${POSTGRESQL_PORT}:5432
