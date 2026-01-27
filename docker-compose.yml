@@ -6,10 +6,9 @@ services:
     ports:
       - ${POSTGRESQL_HOST}:${POSTGRESQL_PORT}:5432
     volumes:
-      - ./postgresql/data:/bitnami/postgresql/data
+      - ./postgresql/data:/var/lib/postgresql/${POSTGRESQL_VERSION}/docker
     environment:
-      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
-      POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit,pg_stat_statements,pg_partman_bgw,pg_jieba
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
 
   redis:
     container_name: redis
