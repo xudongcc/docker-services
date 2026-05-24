@@ -9,7 +9,7 @@ services:
     ports:
       - ${POSTGRESQL_HOST}:${POSTGRESQL_PORT}:5432
     volumes:
-      - ./postgresql/data:/var/lib/postgresql/${POSTGRESQL_VERSION}/docker
+      - ./postgresql/data:/var/lib/postgresql
     environment:
       POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
 
